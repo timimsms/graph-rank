@@ -17,9 +17,10 @@ class GraphRank::TextRank
   end
 
   # Add text and return PageRank.
-  def run(text)
+  def run(text, minimum_required_filter_features=2)
     @text = text
     get_features
+    return [] if filter_features.count < minimum_required_filter_features
     filter_features
     build_graph
     calculate_ranking
