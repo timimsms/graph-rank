@@ -2,8 +2,9 @@ require_relative '../lib/graph-rank'
 require 'rspec'
 
 describe GraphRank::Keywords do
-  
-  before do 
+  let(:tr) { GraphRank::Keywords.new }
+
+  before do
     @text = 'The relentless march of three-dimensional printing continues. What started as a way of making prototypes by depositing layers of material in a manner reminiscent of inkjet printing is now becoming a real industrial technique. But it is also popular with hobbyists of the maker movement of small-scale amateur inventors.
 
     One thing makers would dearly love to do is cheaply ape the recently developed ability to print electrical circuits with sophisticated and costly machines. And a project led by Simon Leigh and his colleagues at the University of Warwick, in Britain, the results of which have just been published in the Public Library of Science, may let them do just that.
@@ -20,11 +21,16 @@ describe GraphRank::Keywords do
 
     Carbomorph can also be used for capacitive sensing, the principle behind the trackpads on laptop computers as well as some touchscreens. Touching an area of carbomorph with your finger changes the local capacitance in a way that is easily detectable by an appropriate electrical circuit. Though Dr Leigh cannot yet print this circuit itself, it is easy to make one using an Arduino chip - a low-cost open-source device that is also popular with makers. In this way he has printed a computer-game controller that uses carbomorph in its buttons. That means makers who also like to play computer games can now indulge in two hobbies for the price of one.'
   end
-  
+
   it "should find the right main keyword" do
-    tr = GraphRank::Keywords.new
     ranks = tr.run(@text)
-    ranks[0][0].should eql 'carbomorph'
+    expect(ranks[0][0]).to eq("carbomorph")
+  end
+
+  it "should not infinitely loop on small terms" do
+    search_query = "how can"
+    ranks = tr.run(search_query)
+    expect(tr.run(search_query)).to be_empty
   end
 
 end
